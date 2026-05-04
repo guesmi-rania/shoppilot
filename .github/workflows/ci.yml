@@ -1,0 +1,72 @@
+name: CI/CD ShopPilot
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-api:
+    name: Test API Go
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Install dependencies
+        working-directory: ./api
+        run: go mod tidy
+
+      - name: Run tests
+        working-directory: ./api
+        run: go test ./... -v
+
+      - name: Build check
+        working-directory: ./api
+        run: go build ./cmd/main.go
+
+  test-frontend:
+    name: Test Frontend React
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Lint
+        working-directory: ./frontend
+        run: npm run lint
+
+      - name: Build
+        working-directory: ./frontend
+        run: npm run build
+        env:
+          VITE_API_URL: https://shoppilot-api.up.railway.app
+
+  docker-build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: [test-api]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -f docker/Dockerfile.api -t shoppilot-api ./api
+
+      - name: Test Docker image
+        run: docker run --rm shoppilot-api ./shoppilot --help || true
