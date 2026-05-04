@@ -14,28 +14,36 @@ import (
 var DB *gorm.DB
 
 func ConnectDB() {
-    dsn := os.Getenv("DATABASE_URL")
+	// 🔥 ON FORCE DATABASE_URL (Render / Prod / Local)
+	dsn := os.Getenv("DATABASE_URL")
 
-    if dsn == "" {
-        log.Fatal().Msg("DATABASE_URL manquant")
-    }
+	if dsn == "" {
+		log.Fatal().Msg("DATABASE_URL manquant (PostgreSQL non configuré)")
+	}
 
-    var err error
-    DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
-    if err != nil {
-        log.Fatal().Err(err).Msg("Impossible de se connecter à PostgreSQL")
-    }
+	var err error
 
-    err = DB.AutoMigrate(
-        &models.User{},
-        &models.Product{},
-        &models.Order{},
-        &models.OrderItem{},
-    )
+	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
 
-    if err != nil {
-        log.Fatal().Err(err).Msg("Erreur migration DB")
-    }
+	if err != nil {
+		log.Fatal().
+			Err(err).
+			Msg("Impossible de se connecter à PostgreSQL (vérifie DATABASE_URL)")
+	}
 
-    log.Info().Msg("PostgreSQL connecté")
+	// Migrations automatiques
+	err = DB.AutoMigrate(
+		&models.User{},
+		&models.Product{},
+		&models.Order{},
+		&models.OrderItem{},
+	)
+
+	if err != nil {
+		log.Fatal().Err(err).Msg("Erreur migration DB")
+	}
+
+	log.Info().Msg("PostgreSQL connecté et migrations appliquées")
 }
