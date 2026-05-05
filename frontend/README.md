@@ -19,44 +19,6 @@ ShopPilot est une application SaaS de gestion e-commerce avec tableau de bord en
 
 ---
 
-## Bugs corrigés (v2)
-
-### 🔴 Bug critique — Redirect login infinie
-**Cause** : `useAuthStore` initialisait `isAuthenticated: null`, mais `PrivateRoute` testait `=== undefined`. Le test ne matchait jamais → redirect immédiate vers `/login`.
-
-**Fix** :
-```js
-// AVANT (bug)
-isAuthenticated: null
-// ...
-if (isAuthenticated === undefined) return null  // jamais true !
-
-// APRÈS (corrigé)
-isAuthenticated: false  // valeur par défaut claire
-// PrivateRoute simplifié :
-return isAuthenticated ? children : <Navigate to="/login" replace />
-```
-
-### 🔴 Bug — Session perdue au refresh
-**Cause** : Zustand sans middleware `persist` → state réinitialisé à chaque reload.
-
-**Fix** : Ajout de `persist` avec `localStorage` dans `authStore.js`.
-
-### 🔴 Bug — Login avec token fake
-**Cause** : `Login.jsx` appelait `login(user, 'demo-token')` sans appeler l'API → token invalide → 401 sur toutes les requêtes API → redirect `/login`.
-
-**Fix** : Appel réel à `POST /api/auth/login` + gestion du compte démo via register si inexistant.
-
-### 🟡 Bug — Routing imbriqué incorrect
-**Cause** : `PrivateRoute` wrappait `<Layout />` sans structure Route parent correcte.
-
-**Fix** : Refactoring avec route parent `path="/"` + routes enfants imbriquées + `PublicRoute` pour éviter d'accéder au login quand déjà connecté.
-
-### 🟡 Bug — GenerateDescription placeholder
-**Fix** : Intégration réelle de l'API Claude avec fallback si `CLAUDE_API_KEY` absent.
-
----
-
 ## Lancer l'application
 
 ### Prérequis

@@ -10,16 +10,12 @@ import Login     from './pages/Login'
 import { useAuthStore } from './store/authStore'
 
 // ─── PrivateRoute ────────────────────────────────────────────────────────────
-// Redirige vers /login si l'utilisateur n'est PAS authentifié.
-// On utilise isAuthenticated === false (et non null/undefined) grâce au store corrigé.
 function PrivateRoute({ children }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   return isAuthenticated ? children : <Navigate to="/login" replace />
 }
 
 // ─── PublicRoute ─────────────────────────────────────────────────────────────
-// Redirige vers /dashboard si l'utilisateur est DÉJÀ connecté
-// (évite d'afficher la page login à quelqu'un qui a déjà un token)
 function PublicRoute({ children }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   return isAuthenticated ? <Navigate to="/dashboard" replace /> : children
