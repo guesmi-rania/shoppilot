@@ -560,7 +560,6 @@ input, textarea, select, button {
 .table-wrapper {
   overflow-x: auto;
   border-radius: var(--r-md);
-  -webkit-overflow-scrolling: touch;
 }
 
 table {
