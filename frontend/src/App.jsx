@@ -1,6 +1,7 @@
+// src/App.jsx
 import { Routes, Route, Navigate } from 'react-router-dom'
 
-import Layout   from './components/Layout'
+import Layout    from './components/Layout'
 import Dashboard from './pages/Dashboard'
 import Products  from './pages/Products'
 import Orders    from './pages/Orders'
@@ -36,7 +37,14 @@ export default function App() {
       />
 
       {/* PROTECTED — Layout contient <Outlet /> pour les pages enfants */}
-      
+      <Route
+        path="/"
+        element={
+          <PrivateRoute>
+            <Layout />
+          </PrivateRoute>
+        }
+      >
         {/* Redirection racine → dashboard */}
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />

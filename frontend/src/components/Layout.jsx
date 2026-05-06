@@ -6,6 +6,7 @@ import {
   LayoutDashboard, Package, ShoppingCart,
   AlertTriangle, Zap, LogOut, Menu, X,
 } from 'lucide-react'
+
 /* ── Liens de navigation ───────────────────────────── */
 const NAV_ITEMS = [
   { to: '/dashboard', label: 'Dashboard',  icon: LayoutDashboard },
@@ -33,7 +34,7 @@ function SidebarNavItem({ item, onClick }) {
 /* ═══════════════════════════════════════════════════════
    LAYOUT PRINCIPAL
 ════════════════════════════════════════════════════════ */
-export default function Layout({ children }) {
+export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const user    = useAuthStore((s) => s.user)
   const logout  = useAuthStore((s) => s.logout)
@@ -168,7 +169,7 @@ export default function Layout({ children }) {
 
         {/* ── Page ── */}
         <main className="page-content">
-         <Outlet /> 
+          <Outlet />
         </main>
       </div>
 
