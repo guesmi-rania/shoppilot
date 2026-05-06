@@ -1,12 +1,11 @@
 // src/components/Layout.jsx
 import { useState, useEffect } from 'react'
-import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { NavLink, useLocation, useNavigate, Outlet } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import {
   LayoutDashboard, Package, ShoppingCart,
   AlertTriangle, Zap, LogOut, Menu, X,
 } from 'lucide-react'
-
 /* ── Liens de navigation ───────────────────────────── */
 const NAV_ITEMS = [
   { to: '/dashboard', label: 'Dashboard',  icon: LayoutDashboard },
@@ -169,7 +168,7 @@ export default function Layout({ children }) {
 
         {/* ── Page ── */}
         <main className="page-content">
-          {children}
+         <Outlet /> 
         </main>
       </div>
 

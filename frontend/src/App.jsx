@@ -36,14 +36,7 @@ export default function App() {
       />
 
       {/* PROTECTED — Layout contient <Outlet /> pour les pages enfants */}
-      <Route
-        path="/"
-        element={
-          <PrivateRoute>
-            <Layout />
-          </PrivateRoute>
-        }
-      >
+      
         {/* Redirection racine → dashboard */}
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
